@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <article class="col-lg-8">
+      
+      <!-- Категория и Навигация назад -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        {% if post.category %}
+          <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle px-3 py-2 rounded-pill">
+            {{ post.category.name }}
+          </span>
+        {% else %}
+          <div></div>
+        {% endif %}
+        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary">
+          &larr; Назад к списку
+        </a>
+      </div>
+
+      <!-- Заголовок статьи -->
+      <h1 class="display-5 fw-bold mb-4">{{ post.title }}</h1>
+
+      <!-- Главное изображение -->
+      {% if post.image %}
+        <div class="mb-4">
+          <img 
+            src="{{ post.image.url|default:post.image }}" 
+            class="img-fluid rounded shadow-sm w-100 object-fit-cover" 
+            alt="{{ post.title }}"
+            style="max-height: 450px;"
+          >
+        </div>
+    {% else %}
+            <div class="mb-4">
+          <img 
+            src="{% static 'default.png' %}" 
+            class="img-fluid rounded shadow-sm w-100 object-fit-cover" 
+            alt="{{ post.title }}"
+            style="max-height: 450px;"
+          >
+        </div>
+      {% endif %}
+
+      <!-- Основной текст публикации -->
+      <!-- Фильтр linebreaks сохраняет абзацы и переносы строк из текста -->
+      <div class="post-content fs-5 lh-base text-secondary mb-5">
+        {{ post.text|linebreaks }}
+      </div>
+
+      <!-- Блок тегов -->
+      {% if post.tags.all %}
+        <div class="pt-4 border-top">
+          <div class="d-flex align-items-center flex-wrap gap-2">
+            <span class="text-body-secondary fw-semibold me-2">Теги:</span>
+            {% for tag in post.tags.all %}
+              <a href="#" class="badge text-bg-light border text-decoration-none text-secondary px-3 py-2 rounded-pill hover-shadow">
+                #{{ tag.name }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+    </article>
+  </div>
+</div>
+{% endblock %}

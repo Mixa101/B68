@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4">Создать пост</h2>
+
+          <!-- Общие ошибки формы (не привязанные к конкретному полю) -->
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+              {% endfor %}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endif %}
+
+          <form method="POST" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <!-- Поле: Заголовок -->
+            <div class="mb-3">
+              <label for="id_title" class="form-label">Заголовок</label>
+              <input 
+                type="text" 
+                class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
+                id="id_title" 
+                name="title" 
+                value="{{ form.title.value|default:'' }}" 
+                placeholder="Введите заголовок поста" 
+                required
+              >
+              {% for error in form.title.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Поле: Категория -->
+            <div class="mb-3">
+              <label for="id_category" class="form-label">Категория</label>
+              <select 
+                class="form-select {% if form.category.errors %}is-invalid{% endif %}" 
+                id="id_category" 
+                name="category" 
+                required
+              >
+                <option value="" disabled {% if not form.category.value %}selected{% endif %}>Выберите категорию...</option>
+                {% for category in categories %}
+                  <option 
+                    value="{{ category.id }}" 
+                    {% if form.category.value|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}
+                  >
+                    {{ category.name }}
+                  </option>
+                {% endfor %}
+              </select>
+              {% for error in form.category.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Поле: Теги -->
+            <div class="mb-3">
+              <label for="id_tags" class="form-label">Теги</label>
+              <select 
+                class="form-select {% if form.tags.errors %}is-invalid{% endif %}" 
+                id="id_tags" 
+                name="tags" 
+                multiple 
+                size="4"
+              >
+                {% for tag in tags %}
+                  <option 
+                    value="{{ tag.id }}" 
+                    {% if form.tags.value and tag.id in form.tags.value or tag.id|stringformat:"s" in form.tags.value %}selected{% endif %}
+                  >
+                    {{ tag.name }}
+                  </option>
+                {% endfor %}
+              </select>
+              <div class="form-text">Удерживайте <kbd>Ctrl</kbd> (или <kbd>Cmd</kbd> на Mac), чтобы выбрать несколько тегов.</div>
+              {% for error in form.tags.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Поле: Текст поста -->
+            <div class="mb-3">
+              <label for="id_text" class="form-label">Текст поста</label>
+              <textarea 
+                class="form-control {% if form.text.errors %}is-invalid{% endif %}" 
+                id="id_text" 
+                name="text" 
+                rows="5" 
+                placeholder="О чем хотите рассказать?" 
+                required
+              >{{ form.text.value|default:'' }}</textarea>
+              {% for error in form.text.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Поле: Изображение -->
+            <div class="mb-4">
+              <label for="id_image" class="form-label">Изображение</label>
+              <input 
+                class="form-control {% if form.image.errors %}is-invalid{% endif %}" 
+                type="file" 
+                id="id_image" 
+                name="image" 
+                accept="image/*"
+              >
+              {% for error in form.image.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">Опубликовать</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
