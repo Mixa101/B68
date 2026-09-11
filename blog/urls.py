@@ -22,6 +22,7 @@ from django.urls import path
 
 from posts.views import (
     create_post,
+    delete_post,
     hello_world,
     my_name,
     post_detail,
@@ -37,6 +38,7 @@ urlpatterns = [
     path("", post_list, name="post_list"),
     path("post/<int:pk>/", post_detail, name="post_detail"),
     path("post/create/", create_post, name="create_post"),
+    path("post/<int:pk>/delete", delete_post, name="delete_post"),
 ]
 
 if settings.DEBUG:
